@@ -38,7 +38,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def init_ui(self):
         self.setGeometry(*WINDOW_GEOMETRY)
-        self.setStyleSheet(f'background-color: {BG_COLOR}')
+        self.setStyleSheet(''' QStackedWidget{
+                               background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
+                               stop:0 rgba(0, 255, 147, 255), stop:1 rgba(0, 255, 244, 255));
+                               border: 0px solid;
+                               border-radius: 5px;}
+                               ''')
 
         self.horizontalLayout.addWidget(self.stack_widget)
 
@@ -63,6 +68,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, button)
 
         self.check_desks_count()
+
 
     def check_desks_count(self):
         if self.verticalLayout.count() <= MAX_DESK_COUNT and self.create_desk_button.isHidden():
@@ -116,39 +122,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 f'{note_widget.desk_name.text()[:MAX_DESK_NAME_LENGTH].strip()}...')
 
 
-STYLE_SHEET = '''
-QPushButton {
-    color: black;
-    border: 3px solid #87FFD2;
-    border-radius: 10px;
-    padding: 5px 10px 5px;
-}
-QPushButtonEnter {
-    color: grey;
-    border: 3px solid #87FFD2;
-    border-radius: 10px;
-    padding: 5px 10px 5px;
-
-}
-QLineEdit {
-    border-radius: 5px;
-}
-QMessageBox {
-    border: 1px; 
-    background-color: #ffffff;
-}
-#delete_desk_button {
-    border: 0px;
-}
-#create_card_button {
-    border: 0px;
-}
-'''
-
+# TODO: Сделать порядочный дизайн
 
 def main():
     app = QApplication(sys.argv)
-    app.setStyleSheet(STYLE_SHEET)
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec())

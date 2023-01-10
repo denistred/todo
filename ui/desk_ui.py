@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'note.ui'
+# Form implementation generated from reading ui file 'desk_widget.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -9,21 +9,53 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from source.modded_qlineedit import ModQLineEdit
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(995, 651)
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(10)
-        MainWindow.setFont(font)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(836, 664)
+        Form.setAutoFillBackground(False)
+        Form.setStyleSheet("QWidget{\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 255, 147, 255), stop:1 rgba(0, 255, 244, 255));\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"}")
+        self.gridLayout_2 = QtWidgets.QGridLayout(Form)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.desk_name = QtWidgets.QLineEdit(Form)
+        self.desk_name.setStyleSheet("QLineEdit{\n"
+"    background-color: transparent;\n"
+"    border: 0px solid;\n"
+"    \n"
+"}")
+        self.desk_name.setObjectName("desk_name")
+        self.horizontalLayout_2.addWidget(self.desk_name)
+        self.delete_desk_button = QtWidgets.QPushButton(Form)
+        self.delete_desk_button.setStyleSheet("QPushButton {\n"
+"    background-color: transparent;\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 223, 129, 255), stop:1 rgba(0, 212, 203, 255));\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(135, 255, 204, 255), stop:1 rgba(126, 255, 250, 255));\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}")
+        self.delete_desk_button.setText("")
+        self.delete_desk_button.setObjectName("delete_desk_button")
+        self.horizontalLayout_2.addWidget(self.delete_desk_button)
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setContentsMargins(1, 1, 1, 1)
         self.gridLayout.setVerticalSpacing(6)
@@ -34,9 +66,27 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setContentsMargins(-1, 10, -1, -1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.create_card_button = QtWidgets.QPushButton(self.centralwidget)
+        self.create_card_button = QtWidgets.QPushButton(Form)
         self.create_card_button.setMinimumSize(QtCore.QSize(355, 0))
-        self.create_card_button.setObjectName("create_note_button")
+        self.create_card_button.setStyleSheet("QPushButton {\n"
+"    background-color: transparent;\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 223, 129, 255), stop:1 rgba(0, 212, 203, 255));\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(135, 255, 204, 255), stop:1 rgba(126, 255, 250, 255));\n"
+"    border: 0px solid;\n"
+"    border-radius: 5px;\n"
+"    padding: 5px 10px 5px;\n"
+"}")
+        self.create_card_button.setObjectName("create_card_button")
         self.verticalLayout_2.addWidget(self.create_card_button)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
@@ -44,34 +94,13 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-        self.gridLayout_2.addLayout(self.gridLayout, 2, 0, 2, 2)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.desk_name = ModQLineEdit()
-        self.desk_name.setObjectName("desk_name")
-        self.horizontalLayout_2.addWidget(self.desk_name)
-        self.delete_desk_button = QtWidgets.QPushButton(self.centralwidget)
-        self.delete_desk_button.setText("")
-        self.delete_desk_button.setObjectName("delete_desk_button")
-        self.horizontalLayout_2.addWidget(self.delete_desk_button)
-        self.gridLayout_2.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
-        self.gridLayout_2.setColumnStretch(0, 1)
-        self.gridLayout_2.setRowStretch(0, 1)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 995, 22))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.gridLayout_2.addLayout(self.gridLayout, 1, 0, 1, 1)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.create_card_button.setText(_translate("MainWindow", "Создать список"))
-        self.desk_name.setText(_translate("MainWindow", "Доска"))
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.desk_name.setText(_translate("Form", "Доска"))
+        self.create_card_button.setText(_translate("Form", "Создать карточку"))

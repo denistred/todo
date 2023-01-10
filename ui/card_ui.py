@@ -24,8 +24,8 @@ class Ui_Form(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
         self.card_name = QtWidgets.QLineEdit(Form)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -33,8 +33,26 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.card_name.sizePolicy().hasHeightForWidth())
         self.card_name.setSizePolicy(sizePolicy)
         self.card_name.setMinimumSize(QtCore.QSize(325, 0))
-        self.card_name.setObjectName("lineEdit")
-        self.horizontalLayout_2.addWidget(self.card_name)
+        self.card_name.setStyleSheet("QLineEdit {\n"
+                                     "    background-color:#ECECEC;\n"
+                                     "    border: 0px solid;\n"
+                                     "    border-radius: 3px;\n"
+                                     "    padding: 2px 5px 2px;\n"
+                                     "}\n"
+                                     "QLineEdit:hover{\n"
+                                     "    background-color:#ACACAC;\n"
+                                     "    border: 0px solid;\n"
+                                     "    border-radius: 3px;\n"
+                                     "    padding: 2px 5px 2px;\n"
+                                     "}\n"
+                                     "QLineEdit:pressed{\n"
+                                     "    background-color:#fcfafa;\n"
+                                     "    border: 0px solid;\n"
+                                     "    border-radius: 3px;\n"
+                                     "    padding: 2px 5px 2px;\n"
+                                     "}")
+        self.card_name.setObjectName("card_name")
+        self.horizontalLayout.addWidget(self.card_name)
         self.delete_widget_button = QtWidgets.QPushButton(Form)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -43,11 +61,30 @@ class Ui_Form(object):
         self.delete_widget_button.setSizePolicy(sizePolicy)
         self.delete_widget_button.setMinimumSize(QtCore.QSize(22, 22))
         self.delete_widget_button.setMaximumSize(QtCore.QSize(22, 22))
+        self.delete_widget_button.setStyleSheet("QPushButton {\n"
+                                                "    background-color:#ECECEC;\n"
+                                                "    border: 0px solid;\n"
+                                                "    border-radius: 3px;\n"
+                                                "    padding: 5px 10px 5px;\n"
+                                                "}\n"
+                                                "QPushButton:hover{\n"
+                                                "    background-color:#ACACAC;\n"
+                                                "    border: 0px solid;\n"
+                                                "    border-radius: 3px;\n"
+                                                "    padding: 5px 10px 5px;\n"
+                                                "}\n"
+                                                "QPushButton:pressed{\n"
+                                                "    background-color:#fcfafa;\n"
+                                                "    border: 0px solid;\n"
+                                                "    border-radius: 3px;\n"
+                                                "    padding: 5px 10px 5px;\n"
+                                                "}")
         self.delete_widget_button.setText("")
         self.delete_widget_button.setObjectName("delete_widget_button")
-        self.horizontalLayout_2.addWidget(self.delete_widget_button)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.horizontalLayout.addWidget(self.delete_widget_button)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum,
+                                           QtWidgets.QSizePolicy.Fixed)
         self.verticalLayout.addItem(spacerItem)
         self.add_task_button = QtWidgets.QPushButton(Form)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -63,10 +100,29 @@ class Ui_Form(object):
         font.setPointSize(10)
         font.setKerning(True)
         self.add_task_button.setFont(font)
+        self.add_task_button.setStyleSheet("QPushButton {\n"
+                                           "    background-color:#ECECEC;\n"
+                                           "    border: 0px solid;\n"
+                                           "    border-radius: 5px;\n"
+                                           "    padding: 5px 10px 5px;\n"
+                                           "}\n"
+                                           "QPushButton:hover{\n"
+                                           "    background-color:#ACACAC;\n"
+                                           "    border: 0px solid;\n"
+                                           "    border-radius: 5px;\n"
+                                           "    padding: 5px 10px 5px;\n"
+                                           "}\n"
+                                           "QPushButton:pressed{\n"
+                                           "    background-color:#fcfafa;\n"
+                                           "    border: 0px solid;\n"
+                                           "    border-radius: 5px;\n"
+                                           "    padding: 5px 10px 5px;\n"
+                                           "}")
         self.add_task_button.setFlat(False)
-        self.add_task_button.setObjectName("add_task")
+        self.add_task_button.setObjectName("add_task_button")
         self.verticalLayout.addWidget(self.add_task_button)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                            QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem1)
         self.verticalLayout_2.addLayout(self.verticalLayout)
 

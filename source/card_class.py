@@ -23,22 +23,29 @@ MAINWIDGET_WIDTH: int = 375
 SHADOW_COLOR: str = '#565656'
 PAINTER_PEN_COLOR: tuple = (255, 255, 255, 0)
 SAVE_BUTTON_SIZE: tuple = (240, 30)
-CANCEL_BUTTON_SIZE: tuple = (105, 30)
+CANCEL_BUTTON_SIZE: tuple = (110, 30)
 WIDGET_FIRST_OFFSET: int = 160
 WIDGET_SECOND_OFFSET: int = 40
 TEXT_MANUAL_WRAP_COEFF: int = 343
 
-# Все переменные назвать понятно
-
 STYLE_SHEET = '''
-NoteWidget {
-    border: 0px;
-}
-#delete_widget_button {
-    border: 0px;
-}
 QPushButton {
-    border: 0px
+    background-color:#ECECEC;
+    border: 0px solid;
+    border-radius: 5px;
+    padding: 5px 10px 5px;
+}
+QPushButton:hover{
+    background-color:#ACACAC;
+    border: 0px solid;
+    border-radius: 5px;
+    padding: 5px 10px 5px;
+}
+QPushButton:pressed{
+    background-color:#fcfafa;
+    border: 0px solid;
+    border-radius: 5px;
+    padding: 5px 10px 5px;
 }
 '''
 
@@ -48,7 +55,7 @@ class CardWidget(QWidget, Ui_Form):
 
     def __init__(self, desk_id, new=True, name=None, id=None):
         super().__init__()
-        self.setStyleSheet(STYLE_SHEET)
+        # self.setStyleSheet(STYLE_SHEET)
         self.desk_id = desk_id
         self.setupUi(self)
         self.init_ui()
@@ -65,33 +72,33 @@ class CardWidget(QWidget, Ui_Form):
             self.card_id = self.db_handler.return_card_id(self.card_name.text())[-1][0]
         else:
             self.card_name.setText(str(name))
-            #self.card_name = name
+            # self.card_name = name
             self.card_id = id
             self.load_notes()
 
     def init_ui(self):
         self.delete_widget_button.clicked.connect(self.delete_widget)
-        self.delete_widget_button.setObjectName('delete_widget_button')
-        self.delete_widget_button.setStyleSheet(f'background-color: {BG_COLOR}')
-        self.delete_widget_button.installEventFilter(self)
+        # self.delete_widget_button.setObjectName('delete_widget_button')
+        # self.delete_widget_button.setStyleSheet(f'background-color: {BG_COLOR}')
+        # self.delete_widget_button.installEventFilter(self)
         pic = QPixmap(CROSS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.delete_widget_button.setIcon(icon)
 
-        self.card_name.setStyleSheet(f'background-color: {BG_COLOR}')
+        # self.card_name.setStyleSheet(f'background-color: {BG_COLOR}')
         self.card_name.setFont(QFont(FONT_NAME, FONT_SIZE))
         self.card_name.setFocusPolicy(Qt.StrongFocus)
         self.card_name.editingFinished.connect(self.title_approve)
-        self.card_name.installEventFilter(self)
+        # self.card_name.installEventFilter(self)
 
         pic = QPixmap(PLUS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.add_task_button.setIcon(icon)
-        self.add_task_button.setStyleSheet(f'background-color: {BG_COLOR}')
+        # self.add_task_button.setStyleSheet(f'background-color: {BG_COLOR}')
         self.add_task_button.clicked.connect(self.create_task)
-        self.add_task_button.installEventFilter(self)
+        # self.add_task_button.installEventFilter(self)
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave:
@@ -193,12 +200,32 @@ class CardWidget(QWidget, Ui_Form):
         self.add_task_button.show()
         self.update()
 
+    def create_plain_text(self, text, height=None):
+        plaintext = ModQPlainTextEdit(self.card_id, new=True)
+        plaintext.setPlainText(text)
+        plaintext.textChanged.connect(self.check_max_size)
+        plaintext.textChanged.connect(self.update_note_content)
+        plaintext.height_change.connect(self.automatic_plaintext_size_change)
+        plaintext.enter_save.connect(self.approve_task)
+        if height:
+            plaintext.setFixedHeight(height)
+        self.update()
+        return plaintext
+
+    def approve_drag_plaintext(self, plaintext):
+        plaintext.textChanged.connect(self.automatic_plaintext_size_change)
+        plaintext.creating = False
+        plaintext.height_change.connect(self.automatic_plaintext_size_change)
+        font = plaintext.document().defaultFont()
+        font_metrics = QFontMetrics(font)
+        text_size = font_metrics.size(0, plaintext.toPlainText())
+        doc = plaintext.document()
+        h = int(20 + text_size.width() // TEXT_MANUAL_WRAP_COEFF * 16 + 2 * doc.documentMargin())
+        plaintext.setFixedHeight(h)
+        return plaintext
+
     def create_task(self):
-        self.current_plaintext = ModQPlainTextEdit(self.card_id)
-        self.current_plaintext.textChanged.connect(self.check_max_size)
-        self.current_plaintext.textChanged.connect(self.update_note_content)
-        self.current_plaintext.height_change.connect(self.automatic_plaintext_size_change)
-        self.current_plaintext.enter_save.connect(self.approve_task)
+        self.current_plaintext = self.create_plain_text('')
 
         pos = self.verticalLayout.count() - 2
         self.verticalLayout.insertWidget(pos, self.current_plaintext)  # создаем новую линию
@@ -208,17 +235,17 @@ class CardWidget(QWidget, Ui_Form):
         self.layout = QHBoxLayout()
 
         button = QPushButton('Сохранить', self)  # создаем новую кнопку добавить задачу
-        button.setStyleSheet(f'background-color: {BG_COLOR};')
+        button.setStyleSheet(STYLE_SHEET)
         button.setFont(QFont(FONT_NAME, FONT_SIZE))
         button.setFixedSize(*SAVE_BUTTON_SIZE)
-        button.installEventFilter(self)
+        #button.installEventFilter(self)
         button.clicked.connect(self.approve_task)
 
         cancel_button = QPushButton('Отмена', self)
-        cancel_button.setStyleSheet(f'background-color: {BG_COLOR};')
+        cancel_button.setStyleSheet(STYLE_SHEET)
         cancel_button.setFont(QFont(FONT_NAME, FONT_SIZE))
         cancel_button.setFixedSize(*CANCEL_BUTTON_SIZE)
-        cancel_button.installEventFilter(self)
+        #cancel_button.installEventFilter(self)
         cancel_button.clicked.connect(self.cancel_creating_plaintext)
 
         self.layout.addWidget(button)

@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QPlainTextEdit, QMessageBox, QGraphicsDropShadowEffect, QSizePolicy
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QCursor, QColor, QFont
+from PyQt5.QtCore import pyqtSignal, Qt, QMimeData
+from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QBitmap
 from source.database_handler import Handler
+from source.pil_dragimage import create_image
 
 MODPLAINTEXT_SIZE: tuple = (355, 115)
 MODPALINTEXT_SHADOW_BLUR_SIZE = 10
@@ -79,3 +80,17 @@ class ModQPlainTextEdit(QPlainTextEdit):
             self.deleteLater()
             self.db_handler.delete_note(self.note_id)
         super().focusOutEvent(event)
+
+    def mouseMoveEvent(self, e):
+        if e.buttons() == Qt.LeftButton:
+            drag = QDrag(self)
+            mime = QMimeData()
+            drag.setMimeData(mime)
+
+            pixmap = QPixmap(self.size())
+            pixmap = pixmap.fromImage(create_image(self.toPlainText()))
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(e.pos())
+            drag.exec_(Qt.MoveAction)
+            self.db_handler.delete_note(self.note_id)
+            self.deleteLater()

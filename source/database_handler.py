@@ -81,3 +81,4 @@ class Handler:
         notes = self.cur.execute(
             f'''SELECT id, content FROM notes WHERE cardid={card_id}''').fetchall()
         return notes
+# TODO: Добавить в таблицу столбец с позицией виджета в списке
