@@ -100,6 +100,9 @@ class CardWidget(QWidget, Ui_Form):
         self.add_task_button.clicked.connect(self.create_task)
         # self.add_task_button.installEventFilter(self)
 
+
+    def mouseMoveEvent(self, e) -> None:
+        print(e.pos())
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave:
             obj.setStyleSheet(f'background-color: {BG_COLOR}')

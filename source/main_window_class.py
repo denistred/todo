@@ -48,6 +48,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.horizontalLayout.addWidget(self.stack_widget)
 
         self.create_desk_button.clicked.connect(self.create_desk)
+        self.create_desk_button.clicked.connect(self.picked_button_show)
+
+    def picked_button_show(self):
+        for i in self.stack_widget_buttons:
+            i.setStyleSheet('''QPushButton{
+                                        background-color:transparent;
+                                        border: 1px outset rgb(220, 220, 220);
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:hover{
+                                        background-color:rgb(220, 220, 220);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:pressed{
+                                        background-color:rgb(200, 200, 200);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }''')
+        self.stack_widget_buttons[self.stack_widget.currentIndex()].setStyleSheet('''QPushButton{
+                                        background-color:rgb(220, 220, 220);
+                                        border: 0px outset rgb(238, 238, 238);
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:hover{
+                                        background-color:rgb(220, 220, 220);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:pressed{
+                                        background-color:rgb(200, 200, 200);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }''')
 
     def create_desk(self):
         note_widget = DeskWidget(self.stack_widget.count())
@@ -61,10 +101,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         note_widget.desk_name.setFocus()
 
         button = QPushButton('Доска', self)
+        button.setStyleSheet('''QPushButton{
+                                        background-color:transparent;
+                                        border: 1px outset rgb(220, 220, 220);
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:hover{
+                                        background-color:rgb(220, 220, 220);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:pressed{
+                                        background-color:rgb(200, 200, 200);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }''')
 
         self.stack_widget_buttons.append(button)
         button.clicked.connect(
             lambda: self.stack_widget.setCurrentIndex(note_widget.stack_widget_id))
+        button.clicked.connect(self.picked_button_show)
         self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, button)
 
         self.check_desks_count()
@@ -111,10 +170,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.stack_widget.setCurrentIndex(self.stack_widget.count() - 1)
 
         button = QPushButton(f'{desk_content[1]}', self)
+        button.setStyleSheet('''QPushButton{
+                                        background-color:transparent;
+                                        border: 1px outset rgb(220, 220, 220);
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:hover{
+                                        background-color:rgb(220, 220, 220);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }
+                                    QPushButton:pressed{
+                                        background-color:rgb(200, 200, 200);
+                                        border: 0px solid;
+                                        border-radius: 5px;
+                                        padding: 5px 10px 5px; 
+                                    }''')
+
         self.stack_widget_buttons.append(button)
         button.clicked.connect(
             lambda: self.stack_widget.setCurrentIndex(note_widget.stack_widget_id))
         self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, button)
+        button.clicked.connect(self.picked_button_show)
 
         index = self.stack_widget_ids.index(note_widget.desk_name)
         if len(note_widget.desk_name.text().strip()) > MAX_DESK_NAME_LENGTH:

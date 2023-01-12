@@ -1,11 +1,14 @@
 import sqlite3
+import os
 
 DATABASE_NAME = 'desks_database.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, DATABASE_NAME)
 
 
 class Handler:
     def __init__(self):
-        db = DATABASE_NAME
+        db = db_path
         self.con = sqlite3.connect(db)
         self.cur = self.con.cursor()
 

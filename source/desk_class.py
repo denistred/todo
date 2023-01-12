@@ -17,16 +17,20 @@ MAX_CARDS_COUNT: int = 6
 
 
 def get_nearest_item(layout, pos):
-    nearest_item, nearest_number = None, 1000000
+    pos_y = pos.y() - 40
+    possible_positions = []
     for note_pos in range(layout.count() - 4):
-        note_y = layout.itemAt(note_pos + 2).widget().pos().y()
-        if nearest_number > abs(pos.y() - note_y):
-            nearest_number = abs(pos.y() - note_y)
-            nearest_item = note_pos + 2
-    if not nearest_item:
-        nearest_item = 2
-    return nearest_item
-    # TODO: переделать алгоритм чтобы он точно находил нужную позицию для виджета
+        possible_positions.append(layout.itemAt(note_pos + 2).widget().y())
+    button_widget = layout.itemAt(
+        layout.count() - 2).widget().y()  # Позиция чуть выше кнопки добавления задачи
+    possible_positions.append(button_widget)  # Добавляем позицию чуть выше кнопки добавления задачи
+    nearest_pos, nearest_number = None, 10000000
+    for i, possible_position in enumerate(possible_positions):
+        if nearest_number > abs(pos_y - possible_position):
+            nearest_number = abs(pos_y - possible_position)
+            nearest_pos = i + 2
+    print(possible_positions)
+    return nearest_pos
 
 
 class DeskWidget(QWidget, Ui_Form):
@@ -95,6 +99,7 @@ class DeskWidget(QWidget, Ui_Form):
     def dropEvent(self, e) -> None:
         pos = e.pos()
         widget = e.source()
+        print(pos)
         # print(pos)
         for card_number in range(self.horizontalLayout.count() - 2):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
