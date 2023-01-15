@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, \
     QGraphicsDropShadowEffect, QMessageBox
-from PyQt5.QtCore import Qt, pyqtSignremoal
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QPaintEvent, QPainter, QColor, QFont, QPixmap, QIcon, QFontMetrics
 from ui.card_ui import Ui_Form
 from source.modded_plain_text_edit import ModQPlainTextEdit
