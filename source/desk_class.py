@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
-from PyQt5.QtCore import pyqtSignal, QEvent
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont, QPixmap, QIcon
 from ui.desk_ui import Ui_Form
 from source.card_class import CardWidget
@@ -70,28 +70,16 @@ class DeskWidget(QWidget, Ui_Form):
                                border-radius: 5px;}''')
 
         self.delete_desk_button.clicked.connect(self.delete_desk)
-        self.delete_desk_button.setObjectName('delete_desk_button')
         pic = QPixmap(CROSS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.delete_desk_button.setIcon(icon)
-        # self.delete_desk_button.installEventFilter(self)
 
         self.create_card_button.setFont(QFont(FONT_NAME, FONT_SIZE - 1))
         pic = QPixmap(PLUS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.create_card_button.setIcon(icon)
-        self.create_card_button.setObjectName('create_card_button')
-        # self.create_card_button.installEventFilter(self)
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.Leave:
-            obj.setStyleSheet(f'border: 0px; background-color: {BG_COLOR}')
-        elif event.type() == QEvent.Enter:
-            obj.setStyleSheet(f'border: 0px; background-color: {ON_MOUSE_COLOR}')
-
-        return super().eventFilter(obj, event)
 
     def dragEnterEvent(self, e) -> None:
         e.accept()
@@ -99,8 +87,6 @@ class DeskWidget(QWidget, Ui_Form):
     def dropEvent(self, e) -> None:
         pos = e.pos()
         widget = e.source()
-        print(pos)
-        # print(pos)
         for card_number in range(self.horizontalLayout.count() - 2):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
             if 10 + 380 * card_number < pos.x() < card_number * 380 + 370:
@@ -113,7 +99,6 @@ class DeskWidget(QWidget, Ui_Form):
                         card_widget.create_plain_text(text, widget.height()))
                     new_plain_text.setPlainText(new_plain_text.toPlainText())
                     nearest_item = get_nearest_item(layout, pos)
-                    print(nearest_item)
                     layout.insertWidget(nearest_item, new_plain_text)
             else:
                 widget.show()
@@ -170,5 +155,3 @@ if __name__ == '__main__':
     ex = DeskWidget()
     ex.show()
     sys.exit(app.exec())
-
-# TODO: Удалить EventFilter

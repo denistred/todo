@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QPlainTextEdit, QMessageBox, QGraphicsDropShadowEffect, QSizePolicy
 from PyQt5.QtCore import pyqtSignal, Qt, QMimeData
-from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QBitmap
+from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap
 from source.database_handler import Handler
 from source.pil_dragimage import create_image
 

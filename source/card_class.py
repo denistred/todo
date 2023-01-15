@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, \
     QGraphicsDropShadowEffect, QMessageBox
-from PyQt5.QtCore import Qt, QEvent, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignremoal
 from PyQt5.QtGui import QPaintEvent, QPainter, QColor, QFont, QPixmap, QIcon, QFontMetrics
 from ui.card_ui import Ui_Form
 from source.modded_plain_text_edit import ModQPlainTextEdit
@@ -55,7 +55,6 @@ class CardWidget(QWidget, Ui_Form):
 
     def __init__(self, desk_id, new=True, name=None, id=None):
         super().__init__()
-        # self.setStyleSheet(STYLE_SHEET)
         self.desk_id = desk_id
         self.setupUi(self)
         self.init_ui()
@@ -72,44 +71,25 @@ class CardWidget(QWidget, Ui_Form):
             self.card_id = self.db_handler.return_card_id(self.card_name.text())[-1][0]
         else:
             self.card_name.setText(str(name))
-            # self.card_name = name
             self.card_id = id
             self.load_notes()
 
     def init_ui(self):
         self.delete_widget_button.clicked.connect(self.delete_widget)
-        # self.delete_widget_button.setObjectName('delete_widget_button')
-        # self.delete_widget_button.setStyleSheet(f'background-color: {BG_COLOR}')
-        # self.delete_widget_button.installEventFilter(self)
         pic = QPixmap(CROSS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.delete_widget_button.setIcon(icon)
 
-        # self.card_name.setStyleSheet(f'background-color: {BG_COLOR}')
         self.card_name.setFont(QFont(FONT_NAME, FONT_SIZE))
         self.card_name.setFocusPolicy(Qt.StrongFocus)
         self.card_name.editingFinished.connect(self.title_approve)
-        # self.card_name.installEventFilter(self)
 
         pic = QPixmap(PLUS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
         self.add_task_button.setIcon(icon)
-        # self.add_task_button.setStyleSheet(f'background-color: {BG_COLOR}')
         self.add_task_button.clicked.connect(self.create_task)
-        # self.add_task_button.installEventFilter(self)
-
-
-    def mouseMoveEvent(self, e) -> None:
-        print(e.pos())
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.Leave:
-            obj.setStyleSheet(f'background-color: {BG_COLOR}')
-        elif event.type() == QEvent.Enter:
-            obj.setStyleSheet(f'background-color: {ON_MOUSE_COLOR}')
-
-        return super().eventFilter(obj, event)
 
     def paintEvent(self, a0: QPaintEvent) -> None:
         painter = QPainter(self)
@@ -241,14 +221,12 @@ class CardWidget(QWidget, Ui_Form):
         button.setStyleSheet(STYLE_SHEET)
         button.setFont(QFont(FONT_NAME, FONT_SIZE))
         button.setFixedSize(*SAVE_BUTTON_SIZE)
-        #button.installEventFilter(self)
         button.clicked.connect(self.approve_task)
 
         cancel_button = QPushButton('Отмена', self)
         cancel_button.setStyleSheet(STYLE_SHEET)
         cancel_button.setFont(QFont(FONT_NAME, FONT_SIZE))
         cancel_button.setFixedSize(*CANCEL_BUTTON_SIZE)
-        #cancel_button.installEventFilter(self)
         cancel_button.clicked.connect(self.cancel_creating_plaintext)
 
         self.layout.addWidget(button)
