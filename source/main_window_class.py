@@ -70,24 +70,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                         border-radius: 5px;
                                         padding: 5px 10px 5px; 
                                     }''')
-        self.stack_widget_buttons[self.stack_widget.currentIndex()].setStyleSheet('''QPushButton{
-                                        background-color:rgb(220, 220, 220);
-                                        border: 0px outset rgb(238, 238, 238);
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:hover{
-                                        background-color:rgb(220, 220, 220);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:pressed{
-                                        background-color:rgb(200, 200, 200);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }''')
+        if self.stack_widget_buttons:
+            self.stack_widget_buttons[self.stack_widget.currentIndex()].setStyleSheet('''QPushButton{
+                                            background-color:rgb(220, 220, 220);
+                                            border: 0px outset rgb(238, 238, 238);
+                                            border-radius: 5px;
+                                            padding: 5px 10px 5px; 
+                                        }
+                                        QPushButton:hover{
+                                            background-color:rgb(220, 220, 220);
+                                            border: 0px solid;
+                                            border-radius: 5px;
+                                            padding: 5px 10px 5px; 
+                                        }
+                                        QPushButton:pressed{
+                                            background-color:rgb(200, 200, 200);
+                                            border: 0px solid;
+                                            border-radius: 5px;
+                                            padding: 5px 10px 5px; 
+                                        }''')
 
     def create_desk(self):
         note_widget = DeskWidget(self.stack_widget.count())
