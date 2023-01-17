@@ -3,10 +3,10 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, \
     QGraphicsDropShadowEffect, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QPaintEvent, QPainter, QColor, QFont, QPixmap, QIcon, QFontMetrics
+from PyQt5.QtGui import QColor, QFont, QPixmap, QIcon, QFontMetrics
 from ui.card_ui import Ui_Form
-from source.modded_plain_text_edit import ModQPlainTextEdit
 from source.database_handler import Handler
+from source.modded_text_edit import AutoResizingTextEdit
 
 BG_COLOR: str = '#ECECEC'
 ON_MOUSE_COLOR: str = '#A3A4A4'
@@ -22,7 +22,7 @@ MAINWIDGET_SHADOW_BLUE_SIZE: int = 20
 MAINWIDGET_WIDTH: int = 375
 SHADOW_COLOR: str = '#565656'
 PAINTER_PEN_COLOR: tuple = (255, 255, 255, 0)
-SAVE_BUTTON_SIZE: tuple = (240, 30)
+SAVE_BUTTON_SIZE: tuple = (225, 30)
 CANCEL_BUTTON_SIZE: tuple = (110, 30)
 WIDGET_FIRST_OFFSET: int = 160
 WIDGET_SECOND_OFFSET: int = 40
@@ -65,6 +65,9 @@ class CardWidget(QWidget, Ui_Form):
         shadow.setOffset(0, 0)
         self.setGraphicsEffect(shadow)
         self.db_handler = Handler()
+        self.setStyleSheet('''background-color: #f5f5f5;
+        border-radius: 5px''')
+        self.add_task_button.setFixedWidth(340)
 
         if new:
             self.db_handler.create_card(self.card_name.text(), self.desk_id)
@@ -91,21 +94,6 @@ class CardWidget(QWidget, Ui_Form):
         self.add_task_button.setIcon(icon)
         self.add_task_button.clicked.connect(self.create_task)
 
-    def paintEvent(self, a0: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setPen(QColor(*PAINTER_PEN_COLOR))
-        last_item = self.verticalLayout.count() - 2
-        last_item_x = self.verticalLayout.itemAt(last_item).widget().x()
-        last_item_y = self.verticalLayout.itemAt(last_item).widget().y()
-        last_item_width = self.verticalLayout.itemAt(last_item).widget().width()
-        painter.setBrush(QColor(BG_COLOR))
-        if self.verticalLayout.itemAt(last_item).widget().isHidden():
-            painter.drawRoundedRect(0, 0, last_item_x * 2 + last_item_width, last_item_y +
-                                    WIDGET_FIRST_OFFSET, 5, 5)
-        else:
-            painter.drawRoundedRect(0, 0, last_item_x * 2 + last_item_width, last_item_y +
-                                    WIDGET_SECOND_OFFSET, 5, 5)
-
     def delete_widget(self):
         confirmation = QMessageBox()
         confirmation.setText('Вы уверены что хотите удалить список?')
@@ -122,9 +110,10 @@ class CardWidget(QWidget, Ui_Form):
             self.graphicsEffect().setEnabled(False)
             self.update()
             self.db_handler.delete_card(self.card_id)
+            self.hide()
             self.deleteLater()
-            self.widget_delete_signal.emit()
             self.update()
+            self.widget_delete_signal.emit()
 
     def title_approve(self):
         if not (self.card_name.text()):
@@ -141,35 +130,15 @@ class CardWidget(QWidget, Ui_Form):
                 self.verticalLayout.removeItem(self.layout)
                 self.add_task_button.show()
                 self.update()
-                self.current_plaintext.textChanged.connect(self.automatic_plaintext_size_change)
 
                 self.current_plaintext.creating = False
-                self.current_plaintext.height_change.connect(self.automatic_plaintext_size_change)
-                self.set_start_size()
                 self.update()
             else:
                 self.verticalLayout.itemAt(pos).widget().setFocus()
         except AttributeError:
             pass
 
-    def automatic_plaintext_size_change(self):
-        if self.sender().__class__.__name__ == 'ModQPlainTextEdit':
-            self.plain_text_size_change()
-
-    def plain_text_size_change(self: ModQPlainTextEdit):
-        doc = self.sender().document()
-        tb = doc.findBlockByNumber(doc.blockCount() - 1)
-        h = int(self.sender().blockBoundingGeometry(tb).bottom() + 2 * doc.documentMargin())
-        self.sender().setFixedHeight(h)
-        self.update()
-
-    def check_max_size(self: ModQPlainTextEdit):
-        if len(self.sender().toPlainText()) > MODPLAINTEXT_MAX_TEXT_SIZE:
-            self.sender().setPlainText(self.sender().toPlainText()[0:MODPLAINTEXT_MAX_TEXT_SIZE])
-            self.sender().setFocus()
-            self.update()
-
-    def update_note_content(self: ModQPlainTextEdit):
+    def update_note_content(self: AutoResizingTextEdit):
         if "'" in self.sender().toPlainText():
             self.sender().setPlainText(self.sender().toPlainText().replace("'", ''))
         self.db_handler.update_note(self.sender().toPlainText(), self.sender().note_id)
@@ -184,11 +153,9 @@ class CardWidget(QWidget, Ui_Form):
         self.update()
 
     def create_plain_text(self, text, height=None):
-        plaintext = ModQPlainTextEdit(self.card_id, new=True)
+        plaintext = AutoResizingTextEdit(self.card_id, new=True)
         plaintext.setPlainText(text)
-        plaintext.textChanged.connect(self.check_max_size)
         plaintext.textChanged.connect(self.update_note_content)
-        plaintext.height_change.connect(self.automatic_plaintext_size_change)
         plaintext.enter_save.connect(self.approve_task)
         if height:
             plaintext.setFixedHeight(height)
@@ -196,9 +163,7 @@ class CardWidget(QWidget, Ui_Form):
         return plaintext
 
     def approve_drag_plaintext(self, plaintext):
-        plaintext.textChanged.connect(self.automatic_plaintext_size_change)
         plaintext.creating = False
-        plaintext.height_change.connect(self.automatic_plaintext_size_change)
         font = plaintext.document().defaultFont()
         font_metrics = QFontMetrics(font)
         text_size = font_metrics.size(0, plaintext.toPlainText())
@@ -236,30 +201,15 @@ class CardWidget(QWidget, Ui_Form):
         self.verticalLayout.itemAt(pos).widget().setFocus()
         self.update()
 
-    def applying_functions_to_loaded_notes(self: ModQPlainTextEdit):
-        self.sender().textChanged.connect(self.automatic_plaintext_size_change)
-        self.sender().textChanged.disconnect(self.applying_functions_to_loaded_notes)
-
-    def set_start_size(self):
-        font = self.current_plaintext.document().defaultFont()
-        font_metrics = QFontMetrics(font)
-        text_size = font_metrics.size(0, self.current_plaintext.toPlainText())
-        doc = self.current_plaintext.document()
-        h = int(20 + text_size.width() // TEXT_MANUAL_WRAP_COEFF * 16 + 2 * doc.documentMargin())
-        self.current_plaintext.setFixedHeight(h)
-        self.update()
-
     def load_notes(self):
         for i in self.db_handler.load_notes(self.card_id):
             if not i[1]:
                 self.db_handler.delete_note(i[0])
                 continue
-            self.current_plaintext = ModQPlainTextEdit(self.card_id, new=False, content=i[1],
-                                                       note_id=i[0])
-            self.current_plaintext.textChanged.connect(self.check_max_size)
+            self.current_plaintext = AutoResizingTextEdit(self.card_id, new=False, content=i[1],
+                                                          note_id=i[0])
             self.current_plaintext.enter_save.connect(self.approve_task)
             self.current_plaintext.textChanged.connect(self.update_note_content)
-            self.current_plaintext.textChanged.connect(self.applying_functions_to_loaded_notes)
             self.current_plaintext.creating = False
             self.current_plaintext.setPlainText(i[1])
 
@@ -267,7 +217,6 @@ class CardWidget(QWidget, Ui_Form):
             self.verticalLayout.insertWidget(pos, self.current_plaintext)
             self.update()
 
-            self.set_start_size()
             self.update()
 
 

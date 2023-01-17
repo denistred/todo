@@ -33,12 +33,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         icon = QIcon()
         icon.addPixmap(pic)
         self.create_desk_button.setIcon(icon)
-        self.setWindowTitle('ToDoshka')
+        self.setWindowTitle('ToDo')
         self.setWindowIcon(QIcon(WINDOW_ICON))
 
     def init_ui(self):
         self.setGeometry(*WINDOW_GEOMETRY)
-        self.setStyleSheet(''' QStackedWidget{
+        self.stack_widget.setStyleSheet(''' QStackedWidget{
                                background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
                                stop:0 rgba(0, 255, 147, 255), stop:1 rgba(0, 255, 244, 255));
                                border: 0px solid;
@@ -128,7 +128,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.check_desks_count()
 
-
     def check_desks_count(self):
         if self.verticalLayout.count() <= MAX_DESK_COUNT and self.create_desk_button.isHidden():
             self.create_desk_button.show()
@@ -156,6 +155,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         desks = self.db_handler.load_desks()
         for i in desks:
             self.create_loaded_desks(i)
+        self.picked_button_show()
 
     def create_loaded_desks(self, desk_content):
         note_widget = DeskWidget(self.stack_widget.count(), is_new=False, desk_id=desk_content[0],

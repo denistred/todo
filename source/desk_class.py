@@ -95,9 +95,9 @@ class DeskWidget(QWidget, Ui_Form):
                 card_widget_y = card_widget.y()
                 if 70 < pos.y() < card_widget_y + card_widget_height:
                     text = widget.toPlainText()
-                    new_plain_text = card_widget.approve_drag_plaintext(
-                        card_widget.create_plain_text(text, widget.height()))
+                    new_plain_text = card_widget.create_plain_text(text, widget.height())
                     new_plain_text.setPlainText(new_plain_text.toPlainText())
+                    new_plain_text.creating = False
                     nearest_item = get_nearest_item(layout, pos)
                     layout.insertWidget(nearest_item, new_plain_text)
             else:

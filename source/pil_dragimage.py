@@ -1,7 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont, ImageQt
 
 def create_image(text):
-    text = text[:50] + '...'
+    if len(text) > 50:
+        text = text[:50] + '...'
     image = Image.new('RGBA', (355, 25))
     im = ImageDraw.Draw(image)
     im.rounded_rectangle(((0, 0), (355, 25)), 5, fill=(255, 255, 255))

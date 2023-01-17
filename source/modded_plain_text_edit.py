@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QPlainTextEdit, QMessageBox, QGraphicsDropShadowEffect, QSizePolicy
 from PyQt5.QtCore import pyqtSignal, Qt, QMimeData
-from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap
+from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QFontMetrics
+
 from source.database_handler import Handler
 from source.pil_dragimage import create_image
 
@@ -16,6 +17,7 @@ SHADOW_OFFSET: tuple = (0, 0)
 class ModQPlainTextEdit(QPlainTextEdit):
     height_change = pyqtSignal()
     enter_save = pyqtSignal()
+
 
     def __init__(self, card_id, new=True, content=None, note_id=None):
         super().__init__()
@@ -94,3 +96,4 @@ class ModQPlainTextEdit(QPlainTextEdit):
             drag.exec_(Qt.MoveAction)
             self.db_handler.delete_note(self.note_id)
             self.deleteLater()
+            self.cancel_creating()
