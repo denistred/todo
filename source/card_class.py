@@ -123,7 +123,7 @@ class CardWidget(QWidget, Ui_Form):
 
     def approve_task(self):
         try:
-            pos = self.verticalLayout.count() - 4
+            pos = self.verticalLayout.count() - 3
             if self.current_plaintext.toPlainText().strip():
                 self.layout.removeWidget(self.layout.itemAt(0).widget())
                 self.layout.removeWidget(self.layout.itemAt(0).widget())
@@ -154,6 +154,7 @@ class CardWidget(QWidget, Ui_Form):
 
     def create_plain_text(self, text, height=None):
         plaintext = AutoResizingTextEdit(self.card_id, new=True)
+        plaintext.setMinimumLines(1)
         plaintext.setPlainText(text)
         plaintext.textChanged.connect(self.update_note_content)
         plaintext.enter_save.connect(self.approve_task)
@@ -175,7 +176,7 @@ class CardWidget(QWidget, Ui_Form):
     def create_task(self):
         self.current_plaintext = self.create_plain_text('')
 
-        pos = self.verticalLayout.count() - 2
+        pos = self.verticalLayout.count() - 1
         self.verticalLayout.insertWidget(pos, self.current_plaintext)  # создаем новую линию
         self.add_task_button.hide()  # прячем кнопку добавить задачу
         self.update()
@@ -208,12 +209,13 @@ class CardWidget(QWidget, Ui_Form):
                 continue
             self.current_plaintext = AutoResizingTextEdit(self.card_id, new=False, content=i[1],
                                                           note_id=i[0])
+            self.current_plaintext.setMinimumLines(1)
             self.current_plaintext.enter_save.connect(self.approve_task)
             self.current_plaintext.textChanged.connect(self.update_note_content)
             self.current_plaintext.creating = False
             self.current_plaintext.setPlainText(i[1])
 
-            pos = self.verticalLayout.count() - 2
+            pos = self.verticalLayout.count() - 1
             self.verticalLayout.insertWidget(pos, self.current_plaintext)
             self.update()
 

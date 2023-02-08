@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFont, QPixmap, QIcon
-from ui.desk_ui import Ui_Form
+from ui.desk_ui import DeskUi
 from source.card_class import CardWidget
 from source.database_handler import Handler
 
@@ -17,12 +17,14 @@ MAX_CARDS_COUNT: int = 6
 
 
 def get_nearest_item(layout, pos):
+    for i in range(layout.count()):
+        print(layout.itemAt(i).widget())
     pos_y = pos.y() - 40
     possible_positions = []
-    for note_pos in range(layout.count() - 4):
+    for note_pos in range(layout.count() - 3):
         possible_positions.append(layout.itemAt(note_pos + 2).widget().y())
     button_widget = layout.itemAt(
-        layout.count() - 2).widget().y()  # Позиция чуть выше кнопки добавления задачи
+        layout.count() - 1).widget().y()  # Позиция чуть выше кнопки добавления задачи
     possible_positions.append(button_widget)  # Добавляем позицию чуть выше кнопки добавления задачи
     nearest_pos, nearest_number = None, 10000000
     for i, possible_position in enumerate(possible_positions):
@@ -33,7 +35,7 @@ def get_nearest_item(layout, pos):
     return nearest_pos
 
 
-class DeskWidget(QWidget, Ui_Form):
+class DeskWidget(QWidget, DeskUi):
     delete_change_desk_button = pyqtSignal(int)
 
     def __init__(self, stacked_widget_id=None, is_new=True, desk_id=None, name=None):
@@ -91,7 +93,7 @@ class DeskWidget(QWidget, Ui_Form):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
             if 10 + 380 * card_number < pos.x() < card_number * 380 + 370:
                 layout = card_widget.verticalLayout
-                card_widget_height = layout.itemAt(layout.count() - 2).widget().y() + 40
+                card_widget_height = layout.itemAt(layout.count() - 1).widget().y() + 40
                 card_widget_y = card_widget.y()
                 if 70 < pos.y() < card_widget_y + card_widget_height:
                     text = widget.toPlainText()

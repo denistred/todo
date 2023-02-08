@@ -202,8 +202,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 f'{note_widget.desk_name.text()[:MAX_DESK_NAME_LENGTH].strip()}...')
 
 
-# TODO: Сделать порядочный дизайн
-
 def main():
     app = QApplication(sys.argv)
     ex = MainWindow()
