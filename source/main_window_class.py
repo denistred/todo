@@ -5,6 +5,8 @@ from ui.main_window_ui import Ui_MainWindow
 from source.modded_qlineedit import ModQLineEdit
 from source.desk_class import DeskWidget
 from source.database_handler import Handler
+from source.css_consts import MAINWINDOW_QSTACKEDWIDGET_STYLE, MAINWINDOW_NOT_PICKED_BUTTON_STYLE, \
+    MAINWINDOW_PICKED_BUTTON_STYLE
 
 BG_COLOR = '#F7F9F9'
 ON_MOUSE_COLOR = '#C6C6C6'
@@ -38,12 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def init_ui(self):
         self.setGeometry(*WINDOW_GEOMETRY)
-        self.stack_widget.setStyleSheet(''' QStackedWidget{
-                               background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
-                               stop:0 rgba(0, 255, 147, 255), stop:1 rgba(0, 255, 244, 255));
-                               border: 0px solid;
-                               border-radius: 5px;}
-                               ''')
+        self.stack_widget.setStyleSheet(MAINWINDOW_QSTACKEDWIDGET_STYLE)
 
         self.horizontalLayout.addWidget(self.stack_widget)
 
@@ -52,43 +49,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def picked_button_show(self):
         for i in self.stack_widget_buttons:
-            i.setStyleSheet('''QPushButton{
-                                        background-color:transparent;
-                                        border: 1px outset rgb(220, 220, 220);
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:hover{
-                                        background-color:rgb(220, 220, 220);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:pressed{
-                                        background-color:rgb(200, 200, 200);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }''')
+            i.setStyleSheet(MAINWINDOW_PICKED_BUTTON_STYLE)
         if self.stack_widget_buttons:
-            self.stack_widget_buttons[self.stack_widget.currentIndex()].setStyleSheet('''QPushButton{
-                                            background-color:rgb(220, 220, 220);
-                                            border: 0px outset rgb(238, 238, 238);
-                                            border-radius: 5px;
-                                            padding: 5px 10px 5px; 
-                                        }
-                                        QPushButton:hover{
-                                            background-color:rgb(220, 220, 220);
-                                            border: 0px solid;
-                                            border-radius: 5px;
-                                            padding: 5px 10px 5px; 
-                                        }
-                                        QPushButton:pressed{
-                                            background-color:rgb(200, 200, 200);
-                                            border: 0px solid;
-                                            border-radius: 5px;
-                                            padding: 5px 10px 5px; 
-                                        }''')
+            self.stack_widget_buttons[self.stack_widget.currentIndex()].setStyleSheet(MAINWINDOW_NOT_PICKED_BUTTON_STYLE)
 
     def create_desk(self):
         note_widget = DeskWidget(self.stack_widget.count())
@@ -102,24 +65,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         note_widget.desk_name.setFocus()
 
         button = QPushButton('Доска', self)
-        button.setStyleSheet('''QPushButton{
-                                        background-color:transparent;
-                                        border: 1px outset rgb(220, 220, 220);
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:hover{
-                                        background-color:rgb(220, 220, 220);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:pressed{
-                                        background-color:rgb(200, 200, 200);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }''')
+        button.setStyleSheet(MAINWINDOW_PICKED_BUTTON_STYLE)
 
         self.stack_widget_buttons.append(button)
         button.clicked.connect(
@@ -171,24 +117,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.stack_widget.setCurrentIndex(self.stack_widget.count() - 1)
 
         button = QPushButton(f'{desk_content[1]}', self)
-        button.setStyleSheet('''QPushButton{
-                                        background-color:transparent;
-                                        border: 1px outset rgb(220, 220, 220);
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:hover{
-                                        background-color:rgb(220, 220, 220);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }
-                                    QPushButton:pressed{
-                                        background-color:rgb(200, 200, 200);
-                                        border: 0px solid;
-                                        border-radius: 5px;
-                                        padding: 5px 10px 5px; 
-                                    }''')
+        button.setStyleSheet(MAINWINDOW_PICKED_BUTTON_STYLE)
 
         self.stack_widget_buttons.append(button)
         button.clicked.connect(

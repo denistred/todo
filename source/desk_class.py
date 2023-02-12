@@ -5,6 +5,7 @@ from PyQt5.QtGui import QFont, QPixmap, QIcon
 from ui.desk_ui import DeskUi
 from source.card_class import CardWidget
 from source.database_handler import Handler
+from source.css_consts import DESK_WIDGET_STYLE
 
 BG_COLOR: str = '#87FFD2'
 CROSS_ICON: str = 'icons/cross.png'
@@ -17,21 +18,23 @@ MAX_CARDS_COUNT: int = 6
 
 
 def get_nearest_item(layout, pos):
-    for i in range(layout.count()):
-        print(layout.itemAt(i).widget())
+    #for i in range(layout.count()):
+        #print(layout.itemAt(i).widget())
     pos_y = pos.y() - 40
     possible_positions = []
     for note_pos in range(layout.count() - 3):
-        possible_positions.append(layout.itemAt(note_pos + 2).widget().y())
-    button_widget = layout.itemAt(
-        layout.count() - 1).widget().y()  # Позиция чуть выше кнопки добавления задачи
+        try:
+            possible_positions.append(layout.itemAt(note_pos + 2).widget().y())
+        except:
+            pass
+    button_widget = layout.itemAt(layout.count() - 1).widget().y()  # Позиция чуть выше кнопки добавления задачи
     possible_positions.append(button_widget)  # Добавляем позицию чуть выше кнопки добавления задачи
     nearest_pos, nearest_number = None, 10000000
     for i, possible_position in enumerate(possible_positions):
         if nearest_number > abs(pos_y - possible_position):
             nearest_number = abs(pos_y - possible_position)
             nearest_pos = i + 2
-    print(possible_positions)
+    #print(possible_positions)
     return nearest_pos
 
 
@@ -65,11 +68,7 @@ class DeskWidget(QWidget, DeskUi):
 
     def init_ui(self):
         self.setGeometry(*WIDGET_GEOMETRY)
-        self.setStyleSheet('''QWidget{
-                               background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
-                               stop:0 rgba(0, 255, 147, 255), stop:1 rgba(0, 255, 244, 255));
-                               border: 0px solid;
-                               border-radius: 5px;}''')
+        self.setStyleSheet(DESK_WIDGET_STYLE)
 
         self.delete_desk_button.clicked.connect(self.delete_desk)
         pic = QPixmap(CROSS_ICON)
@@ -92,6 +91,8 @@ class DeskWidget(QWidget, DeskUi):
         for card_number in range(self.horizontalLayout.count() - 2):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
             if 10 + 380 * card_number < pos.x() < card_number * 380 + 370:
+                if card_widget.creating_plaintext: # Отменяем создание новой заметки при перетаскивании
+                    card_widget.cancel_creating_plaintext()
                 layout = card_widget.verticalLayout
                 card_widget_height = layout.itemAt(layout.count() - 1).widget().y() + 40
                 card_widget_y = card_widget.y()

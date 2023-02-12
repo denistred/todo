@@ -68,6 +68,7 @@ class CardWidget(QWidget, Ui_Form):
         self.setStyleSheet('''background-color: #f5f5f5;
         border-radius: 5px''')
         self.add_task_button.setFixedWidth(340)
+        self.creating_plaintext = False
 
         if new:
             self.db_handler.create_card(self.card_name.text(), self.desk_id)
@@ -104,9 +105,6 @@ class CardWidget(QWidget, Ui_Form):
         confirmation.addButton('Отмена', QMessageBox.RejectRole)
         value = confirmation.exec()
         if value == 0:
-            for i in range(self.verticalLayout.count()):
-                if self.verticalLayout.itemAt(i).__class__.__name__ == 'QPlainTextEdit':
-                    self.verticalLayout.itemAt(i).widget().graphicsEffect().setEnabled(False)
             self.graphicsEffect().setEnabled(False)
             self.update()
             self.db_handler.delete_card(self.card_id)
@@ -121,6 +119,17 @@ class CardWidget(QWidget, Ui_Form):
         else:
             self.db_handler.update_card(self.card_id, self.card_name.text())
 
+    def create_plain_text(self, text, height=None):
+        plaintext = AutoResizingTextEdit(self.card_id, new=True)
+        plaintext.setMinimumLines(1)
+        plaintext.setPlainText(text)
+        plaintext.textChanged.connect(self.update_note_content)
+        plaintext.enter_save.connect(self.approve_task)
+        if height:
+            plaintext.setFixedHeight(height)
+        self.update()
+        return plaintext
+
     def approve_task(self):
         try:
             pos = self.verticalLayout.count() - 3
@@ -130,6 +139,7 @@ class CardWidget(QWidget, Ui_Form):
                 self.verticalLayout.removeItem(self.layout)
                 self.add_task_button.show()
                 self.update()
+                self.creating_plaintext = False
 
                 self.current_plaintext.creating = False
                 self.update()
@@ -151,17 +161,7 @@ class CardWidget(QWidget, Ui_Form):
         self.verticalLayout.removeItem(self.layout)
         self.add_task_button.show()
         self.update()
-
-    def create_plain_text(self, text, height=None):
-        plaintext = AutoResizingTextEdit(self.card_id, new=True)
-        plaintext.setMinimumLines(1)
-        plaintext.setPlainText(text)
-        plaintext.textChanged.connect(self.update_note_content)
-        plaintext.enter_save.connect(self.approve_task)
-        if height:
-            plaintext.setFixedHeight(height)
-        self.update()
-        return plaintext
+        self.creating_plaintext = False
 
     def approve_drag_plaintext(self, plaintext):
         plaintext.creating = False
@@ -173,16 +173,7 @@ class CardWidget(QWidget, Ui_Form):
         plaintext.setFixedHeight(h)
         return plaintext
 
-    def create_task(self):
-        self.current_plaintext = self.create_plain_text('')
-
-        pos = self.verticalLayout.count() - 1
-        self.verticalLayout.insertWidget(pos, self.current_plaintext)  # создаем новую линию
-        self.add_task_button.hide()  # прячем кнопку добавить задачу
-        self.update()
-
-        self.layout = QHBoxLayout()
-
+    def create_buttons_for_task_creation(self):
         button = QPushButton('Сохранить', self)  # создаем новую кнопку добавить задачу
         button.setStyleSheet(STYLE_SHEET)
         button.setFont(QFont(FONT_NAME, FONT_SIZE))
@@ -195,10 +186,27 @@ class CardWidget(QWidget, Ui_Form):
         cancel_button.setFixedSize(*CANCEL_BUTTON_SIZE)
         cancel_button.clicked.connect(self.cancel_creating_plaintext)
 
-        self.layout.addWidget(button)
+        return button, cancel_button
+
+    def create_task(self):
+        self.current_plaintext = self.create_plain_text('')
+
+        pos = self.verticalLayout.count() - 1
+        self.verticalLayout.insertWidget(pos, self.current_plaintext)  # создаем новый textedit
+        self.add_task_button.hide()  # прячем кнопку добавить задачу
+        self.update()
+
+        self.layout = QHBoxLayout()  # layout для кнопок "сохранить" и "отмена"
+
+        button, cancel_button = self.create_buttons_for_task_creation()
+
+        self.creating_plaintext = True
+
+        self.layout.addWidget(button)  # добавляем кнопки в layout
         self.layout.addWidget(cancel_button)
 
-        self.verticalLayout.insertLayout(pos + 1, self.layout)
+        self.verticalLayout.insertLayout(pos + 1,
+                                         self.layout)  # добавляем layout в основной verticalLayout
         self.verticalLayout.itemAt(pos).widget().setFocus()
         self.update()
 
@@ -217,8 +225,6 @@ class CardWidget(QWidget, Ui_Form):
 
             pos = self.verticalLayout.count() - 1
             self.verticalLayout.insertWidget(pos, self.current_plaintext)
-            self.update()
-
             self.update()
 
 

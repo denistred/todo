@@ -1,12 +1,8 @@
 """ A text editor that automatically adjusts its height to the height of the text
     in its document when managed by a layout. """
-from PyQt5.QtWidgets import QTextEdit, QSizePolicy
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtCore import QSize
-
-from PyQt5.QtWidgets import QPlainTextEdit, QMessageBox, QGraphicsDropShadowEffect, QSizePolicy
-from PyQt5.QtCore import pyqtSignal, Qt, QMimeData
-from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap
+from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect, QSizePolicy, QTextEdit
+from PyQt5.QtCore import pyqtSignal, Qt, QMimeData, QSize
+from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QFontMetrics
 
 from source.database_handler import Handler
 from source.pil_dragimage import create_image
@@ -57,7 +53,6 @@ class AutoResizingTextEdit(QTextEdit):
         self.setGraphicsEffect(shadow)
 
         self.setStyleSheet('border-radius: 5px; background-color: #FFFFFF')
-        # self.setFixedSize(*MODPLAINTEXT_SIZE)
         self.setFont(QFont(FONT_NAME, FONT_SIZE))
 
         self.textChanged.connect(lambda: self.updateGeometry())
