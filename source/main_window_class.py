@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QPushButton
 from PyQt5.QtGui import QFont, QPixmap, QIcon
+from PyQt5.QtCore import Qt
 from ui.main_window_ui import Ui_MainWindow
 from source.modded_qlineedit import ModQLineEdit
 from source.desk_class import DeskWidget
@@ -37,6 +38,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.create_desk_button.setIcon(icon)
         self.setWindowTitle('ToDo')
         self.setWindowIcon(QIcon(WINDOW_ICON))
+
+    def mousePressEvent(self, e) -> None:
+        if e.buttons() == Qt.LeftButton:
+            self.setFocus()
 
     def init_ui(self):
         self.setGeometry(*WINDOW_GEOMETRY)

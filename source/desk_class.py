@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QFont, QPixmap, QIcon
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QFont, QPixmap, QIcon, QKeyEvent
 from ui.desk_ui import DeskUi
 from source.card_class import CardWidget
 from source.database_handler import Handler
@@ -92,14 +92,14 @@ class DeskWidget(QWidget, DeskUi):
         for card_number in range(self.horizontalLayout.count() - 2):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
             if 10 + 380 * card_number < pos.x() < card_number * 380 + 370:
-                if card_widget.creating_plaintext:  # Отменяем создание новой заметки при перетаскивании
-                    card_widget.cancel_creating_plaintext()
+                if card_widget.creating_plaintext:  # проверяем делается ли новая заметка
+                    card_widget.approve_task()
                 layout = card_widget.verticalLayout
                 card_widget_height = layout.itemAt(layout.count() - 1).widget().y() + 40
                 card_widget_y = card_widget.y()
                 if 70 < pos.y() < card_widget_y + card_widget_height:
                     text = widget.toPlainText()
-                    new_plain_text = card_widget.create_plain_text(text, widget.height())
+                    new_plain_text = card_widget.create_plain_text(text)
                     new_plain_text.setPlainText(new_plain_text.toPlainText())
                     new_plain_text.creating = False
                     nearest_item = get_nearest_item(layout, pos)

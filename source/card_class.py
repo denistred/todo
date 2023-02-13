@@ -95,6 +95,12 @@ class CardWidget(QWidget, Ui_Form):
         self.add_task_button.setIcon(icon)
         self.add_task_button.clicked.connect(self.create_task)
 
+    def keyPressEvent(self, e) -> None:
+        print('oooo')
+        if e.key() == Qt.Key_Left:
+            self.setFocus()
+
+
     def delete_widget(self):
         confirmation = QMessageBox()
         confirmation.setText('Вы уверены что хотите удалить список?')
@@ -119,14 +125,12 @@ class CardWidget(QWidget, Ui_Form):
         else:
             self.db_handler.update_card(self.card_id, self.card_name.text())
 
-    def create_plain_text(self, text, height=None):
+    def create_plain_text(self, text):
         plaintext = AutoResizingTextEdit(self.card_id, new=True)
         plaintext.setMinimumLines(1)
         plaintext.setPlainText(text)
         plaintext.textChanged.connect(self.update_note_content)
         plaintext.enter_save.connect(self.approve_task)
-        if height:
-            plaintext.setFixedHeight(height)
         self.update()
         return plaintext
 
@@ -165,12 +169,6 @@ class CardWidget(QWidget, Ui_Form):
 
     def approve_drag_plaintext(self, plaintext):
         plaintext.creating = False
-        font = plaintext.document().defaultFont()
-        font_metrics = QFontMetrics(font)
-        text_size = font_metrics.size(0, plaintext.toPlainText())
-        doc = plaintext.document()
-        h = int(20 + text_size.width() // TEXT_MANUAL_WRAP_COEFF * 16 + 2 * doc.documentMargin())
-        plaintext.setFixedHeight(h)
         return plaintext
 
     def create_buttons_for_task_creation(self):

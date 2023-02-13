@@ -1,8 +1,8 @@
 """ A text editor that automatically adjusts its height to the height of the text
     in its document when managed by a layout. """
 from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect, QSizePolicy, QTextEdit
-from PyQt5.QtCore import pyqtSignal, Qt, QMimeData, QSize
-from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QFontMetrics
+from PyQt5.QtCore import pyqtSignal, Qt, QMimeData, QSize, QTimer
+from PyQt5.QtGui import QCursor, QColor, QFont, QDrag, QPixmap, QFontMetrics, QPainter
 
 from source.database_handler import Handler
 from source.pil_dragimage import create_image
@@ -57,6 +57,10 @@ class AutoResizingTextEdit(QTextEdit):
 
         self.textChanged.connect(lambda: self.updateGeometry())
 
+        self.timer = QTimer()
+        self.timer.setInterval(100)
+        self.timer.timeout.connect(self.drag_and_drop_timer_check)
+
     def context_menu(self):
         self.normal_menu = self.createStandardContextMenu()
         self.add_custom_menu_items(self.normal_menu)
@@ -75,8 +79,11 @@ class AutoResizingTextEdit(QTextEdit):
             msg.critical(self, 'Ошибка', "Сначала сохраните заметку или нажмите кнопку 'Отмена'")
 
     def keyPressEvent(self, event) -> None:
-        if event.key() == Qt.Key_Return:
+        if event.key() == Qt.Key_Return and self.creating:
             self.enter_save.emit()
+        # elif event.key() == Qt.Key_Return and not self.creating and not (
+        #         event.modifiers() and Qt.ControlModifier):
+        #     self.clearFocus()
         else:
             super().keyPressEvent(event)
 
@@ -87,18 +94,22 @@ class AutoResizingTextEdit(QTextEdit):
         super().focusOutEvent(event)
 
     def mouseMoveEvent(self, e):
-        if e.buttons() == Qt.LeftButton and not self.creating:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
+        super().mouseMoveEvent(e)
+        if e.buttons() == Qt.RightButton and not self.creating:
+            self.drag_and_drop_timer_check(e.pos())
 
-            pixmap = QPixmap(self.size())
-            pixmap = pixmap.fromImage(create_image(self.toPlainText()))
-            drag.setPixmap(pixmap)
-            drag.setHotSpot(e.pos())
-            drag.exec_(Qt.MoveAction)
-            self.db_handler.delete_note(self.note_id)
-            self.deleteLater()
+    def drag_and_drop_timer_check(self, hotspot_pos):
+        drag = QDrag(self)
+        mime = QMimeData()
+        drag.setMimeData(mime)
+
+        pixmap = QPixmap(self.size())
+        pixmap = pixmap.fromImage(create_image(self.toPlainText()))
+        drag.setPixmap(pixmap)
+        drag.setHotSpot(hotspot_pos)
+        drag.exec_(Qt.MoveAction)
+        self.db_handler.delete_note(self.note_id)
+        self.deleteLater()
 
     def setMinimumLines(self, num_lines):
         """ Sets minimum widget height to a value corresponding to specified number of lines
