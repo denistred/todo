@@ -18,8 +18,8 @@ MAX_CARDS_COUNT: int = 6
 
 
 def get_nearest_item(layout, pos):
-    #for i in range(layout.count()):
-        #print(layout.itemAt(i).widget())
+    # for i in range(layout.count()):
+    # print(layout.itemAt(i).widget())
     pos_y = pos.y() - 40
     possible_positions = []
     for note_pos in range(layout.count() - 3):
@@ -27,14 +27,15 @@ def get_nearest_item(layout, pos):
             possible_positions.append(layout.itemAt(note_pos + 2).widget().y())
         except:
             pass
-    button_widget = layout.itemAt(layout.count() - 1).widget().y()  # Позиция чуть выше кнопки добавления задачи
+    button_widget = layout.itemAt(
+        layout.count() - 1).widget().y()  # Позиция чуть выше кнопки добавления задачи
     possible_positions.append(button_widget)  # Добавляем позицию чуть выше кнопки добавления задачи
     nearest_pos, nearest_number = None, 10000000
     for i, possible_position in enumerate(possible_positions):
         if nearest_number > abs(pos_y - possible_position):
             nearest_number = abs(pos_y - possible_position)
             nearest_pos = i + 2
-    #print(possible_positions)
+    # print(possible_positions)
     return nearest_pos
 
 
@@ -70,7 +71,7 @@ class DeskWidget(QWidget, DeskUi):
         self.setGeometry(*WIDGET_GEOMETRY)
         self.setStyleSheet(DESK_WIDGET_STYLE)
 
-        self.delete_desk_button.clicked.connect(self.delete_desk)
+        self.delete_desk_button.clicked.connect(self.delete_desk_check)
         pic = QPixmap(CROSS_ICON)
         icon = QIcon()
         icon.addPixmap(pic)
@@ -91,7 +92,7 @@ class DeskWidget(QWidget, DeskUi):
         for card_number in range(self.horizontalLayout.count() - 2):
             card_widget = self.horizontalLayout.itemAt(card_number).widget()
             if 10 + 380 * card_number < pos.x() < card_number * 380 + 370:
-                if card_widget.creating_plaintext: # Отменяем создание новой заметки при перетаскивании
+                if card_widget.creating_plaintext:  # Отменяем создание новой заметки при перетаскивании
                     card_widget.cancel_creating_plaintext()
                 layout = card_widget.verticalLayout
                 card_widget_height = layout.itemAt(layout.count() - 1).widget().y() + 40
@@ -106,7 +107,23 @@ class DeskWidget(QWidget, DeskUi):
             else:
                 widget.show()
 
-    def delete_desk(self) -> None:
+    def delete_desk_check(self) -> None:
+        cards_count = self.horizontalLayout.count() - 2
+        if cards_count > 0:
+            confirmation = QMessageBox()
+            confirmation.setText('Вы уверены что хотите удалить доску?')
+            confirmation.setWindowTitle('Удалить доску?')
+            confirmation.setIcon(QMessageBox.Question)
+            confirmation.setStyleSheet('background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);')
+            confirmation.addButton('Да', QMessageBox.YesRole)
+            confirmation.addButton('Отмена', QMessageBox.RejectRole)
+            value = confirmation.exec()
+            if value == 0:
+                self.delete_desk()
+        else:
+            self.delete_desk()
+
+    def delete_desk(self):
         if self.in_database:
             self.db_handler.delete_desk(self.db_id)
         self.delete_change_desk_button.emit(self.stack_widget_id)
