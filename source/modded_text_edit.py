@@ -57,10 +57,6 @@ class AutoResizingTextEdit(QTextEdit):
 
         self.textChanged.connect(lambda: self.updateGeometry())
 
-        self.timer = QTimer()
-        self.timer.setInterval(100)
-        self.timer.timeout.connect(self.drag_and_drop_timer_check)
-
     def context_menu(self):
         self.normal_menu = self.createStandardContextMenu()
         self.add_custom_menu_items(self.normal_menu)
@@ -96,20 +92,17 @@ class AutoResizingTextEdit(QTextEdit):
     def mouseMoveEvent(self, e):
         super().mouseMoveEvent(e)
         if e.buttons() == Qt.RightButton and not self.creating:
-            self.drag_and_drop_timer_check(e.pos())
+            drag = QDrag(self)
+            mime = QMimeData()
+            drag.setMimeData(mime)
 
-    def drag_and_drop_timer_check(self, hotspot_pos):
-        drag = QDrag(self)
-        mime = QMimeData()
-        drag.setMimeData(mime)
-
-        pixmap = QPixmap(self.size())
-        pixmap = pixmap.fromImage(create_image(self.toPlainText()))
-        drag.setPixmap(pixmap)
-        drag.setHotSpot(hotspot_pos)
-        drag.exec_(Qt.MoveAction)
-        self.db_handler.delete_note(self.note_id)
-        self.deleteLater()
+            pixmap = QPixmap(self.size())
+            pixmap = pixmap.fromImage(create_image(self.toPlainText()))
+            drag.setPixmap(pixmap)
+            drag.setHotSpot(e.pos())
+            drag.exec_(Qt.MoveAction)
+            self.db_handler.delete_note(self.note_id)
+            self.deleteLater()
 
     def setMinimumLines(self, num_lines):
         """ Sets minimum widget height to a value corresponding to specified number of lines

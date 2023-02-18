@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, \
     QGraphicsDropShadowEffect, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QFont, QPixmap, QIcon, QFontMetrics
+from PyQt5.QtGui import QColor, QFont, QPixmap, QIcon
 from ui.card_ui import Ui_Form
 from source.database_handler import Handler
 from source.modded_text_edit import AutoResizingTextEdit
@@ -99,7 +99,6 @@ class CardWidget(QWidget, Ui_Form):
         print('oooo')
         if e.key() == Qt.Key_Left:
             self.setFocus()
-
 
     def delete_widget(self):
         confirmation = QMessageBox()
