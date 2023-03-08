@@ -96,7 +96,6 @@ class CardWidget(QWidget, Ui_Form):
         self.add_task_button.clicked.connect(self.create_task)
 
     def keyPressEvent(self, e) -> None:
-        print('oooo')
         if e.key() == Qt.Key_Left:
             self.setFocus()
 
